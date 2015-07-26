@@ -1,0 +1,1 @@
+src\CsEnumsToJs\bin\Debug\csenumstojs src\CsEnumsToJsTestTarget\bin\Debug\CsEnumsToJsTestTarget.dll test out.js JsEnum
