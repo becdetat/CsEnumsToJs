@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace CsEnumsToJs
 {
@@ -76,14 +77,37 @@ namespace CsEnumsToJs
             WriteLine(line, ConsoleColor.Red);
         }
 
-        public static void WriteException(Exception exception)
+        public static void WriteException(Exception exception, bool showFull = false)
         {
             WriteInfoLine(exception.Message);
-            WriteLine("More info? (n)");
-            var showFullException = Prompt();
-            if (showFullException.IsRoughly("y", "yes"))
+            if (showFull)
             {
-                WriteLine(exception.ToString());
+                WriteActualException(exception);
+            }
+            else
+            {
+                WriteLine("More info? (n)");
+                var showFullException = Prompt();
+                if (showFullException.IsRoughly("y", "yes"))
+                {
+                    WriteActualException(exception);
+                }
+            }
+        }
+
+        private static void WriteActualException(Exception exception)
+        {
+            WriteLine(exception.ToString());
+
+            var rtle = exception as ReflectionTypeLoadException;
+            if (rtle != null)
+            {
+                WriteLine("RTLE");
+
+                foreach (var e in rtle.LoaderExceptions)
+                {
+                    WriteActualException(e);
+                }
             }
         }
     }
