@@ -9,5 +9,10 @@ namespace CsEnumsToJs
         {
             return matches.Any(match => input.Trim().Equals(match.Trim(), StringComparison.InvariantCultureIgnoreCase));
         }
+
+        public static string ToCamelCase(this string input)
+        {
+            return input.First().ToString().ToLower() + input.Substring(1);
+        }
     }
 }
