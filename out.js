@@ -4,17 +4,17 @@ window.test.enums = window.test.enums || {};
 window.test.Enum = function() {
 	var self = this;
 	self.__descriptions = [];
-	self.__ids = [];
-	self.__last_value = 0;
    self.getDescription = function(val){ return self.__descriptions[val]; };
+   self.__map = [];
+   self.getAll = function() { return self.__map; };
 }
 window.test.Enum.prototype.add = function(name, val, description) {
 	var self = this;
-	if(val == undefined) val = ++self.__last_value;
 	self[name] = val;
 	self[val] = name;
 	self.__ids[val] = name;
 	self.__descriptions[val] = description;
+   self.__map.push({ id: val, name: name, description: description });
     return this;
 }
 window.test.enums.enumWithDescriptions = (new window.test.Enum())

@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -57,18 +58,18 @@ namespace CsEnumsToJs
                 builder.AppendLine($"window.{jsNamespace}.Enum = function() {{");
                 builder.AppendLine($"	var self = this;");
                 builder.AppendLine($"	self.__descriptions = [];");
-                builder.AppendLine($"	self.__ids = [];");
-                builder.AppendLine($"	self.__last_value = 0;");
                 builder.AppendLine($"   self.getDescription = function(val){{ return self.__descriptions[val]; }};");
+                builder.AppendLine($"   self.__map = [];");
+                builder.AppendLine($"   self.getAll = function() {{ return self.__map; }};");
                 builder.AppendLine($"}}");
                 builder.AppendLine($"window.{jsNamespace}.Enum.prototype.add = function(name, val, description) {{");
                 builder.AppendLine($"	var self = this;");
-                builder.AppendLine($"	if(val == undefined) val = ++self.__last_value;");
                 builder.AppendLine($"	self[name] = val;");
                 builder.AppendLine($"	self[val] = name;");
                 builder.AppendLine($"	self.__ids[val] = name;");
                 builder.AppendLine($"	self.__descriptions[val] = description;");
-                builder.AppendLine($"    return this;");
+                builder.AppendLine($"   self.__map.push({{ id: val, name: name, description: description }});");
+                builder.AppendLine($"   return this;");
                 builder.AppendLine($"}}");
 
                 foreach (var type in enumTypes)
