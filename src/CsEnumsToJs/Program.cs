@@ -20,7 +20,7 @@ namespace CsEnumsToJs
                 if (args.Length != 4)
                 {
                     Cmd.WriteErrorLine("Incorrect number of arguments");
-                    Cmd.WriteLine("Usage: csenumstojs <path to .dll> <output filename> <namespace> <include attribute>");
+                    Cmd.WriteLine("Usage: csenumstojs <path to .dll> <namespace> <output filename> <include attribute>");
                     Cmd.WriteLine("Enums in the DLL will be scanned and written to the output file under the provided namespace.");
                     Cmd.WriteLine("Eg. csenumstojs foo\\bin\\debug\\foo.dll ui\\enums.js foo JsEnum");
                     return 1;
@@ -57,18 +57,19 @@ namespace CsEnumsToJs
                 builder.AppendLine($"window.{jsNamespace}.enums = window.{jsNamespace}.enums || {{}};");
                 builder.AppendLine($"window.{jsNamespace}.Enum = function() {{");
                 builder.AppendLine($"	var self = this;");
-                builder.AppendLine($"	self.__descriptions = [];");
-                builder.AppendLine($"   self.getDescription = function(val){{ return self.__descriptions[val]; }};");
-                builder.AppendLine($"   self.__map = [];");
-                builder.AppendLine($"   self.getAll = function() {{ return self.__map; }};");
+                builder.AppendLine($"	self.descriptions = [];");
+                builder.AppendLine($"   self.getDescription = function(val){{ return self.descriptions[val]; }};");
+                builder.AppendLine($"   self.ids = [];");
+                builder.AppendLine($"   self.getId = function(name){{ return self.ids[name]; }};");
+                builder.AppendLine($"   self.map = [];");
                 builder.AppendLine($"}}");
                 builder.AppendLine($"window.{jsNamespace}.Enum.prototype.add = function(name, val, description) {{");
                 builder.AppendLine($"	var self = this;");
                 builder.AppendLine($"	self[name] = val;");
                 builder.AppendLine($"	self[val] = name;");
-                builder.AppendLine($"	self.__ids[val] = name;");
-                builder.AppendLine($"	self.__descriptions[val] = description;");
-                builder.AppendLine($"   self.__map.push({{ id: val, name: name, description: description }});");
+                builder.AppendLine($"	self.ids[val] = name;");
+                builder.AppendLine($"	self.descriptions[val] = description;");
+                builder.AppendLine($"   self.map.push({{ id: val, name: name, description: description }});");
                 builder.AppendLine($"   return this;");
                 builder.AppendLine($"}}");
 
@@ -89,8 +90,10 @@ namespace CsEnumsToJs
                 Cmd.WriteLine("Writing...");
                 File.WriteAllText(outputFilename, builder.ToString());
             }
-            catch (ReflectionTypeLoadException e)
+            catch (Exception e)
             {
+                Cmd.WriteErrorLine("Error:");
+                Cmd.WriteException(e);
                 return 1;
             }
 

@@ -3,19 +3,20 @@ window.test = window.test || {};
 window.test.enums = window.test.enums || {};
 window.test.Enum = function() {
 	var self = this;
-	self.__descriptions = [];
-   self.getDescription = function(val){ return self.__descriptions[val]; };
-   self.__map = [];
-   self.getAll = function() { return self.__map; };
+	self.descriptions = [];
+   self.getDescription = function(val){ return self.descriptions[val]; };
+   self.ids = [];
+   self.getId = function(name){ return self.ids[name]; };
+   self.map = [];
 }
 window.test.Enum.prototype.add = function(name, val, description) {
 	var self = this;
 	self[name] = val;
 	self[val] = name;
-	self.__ids[val] = name;
-	self.__descriptions[val] = description;
-   self.__map.push({ id: val, name: name, description: description });
-    return this;
+	self.ids[val] = name;
+	self.descriptions[val] = description;
+   self.map.push({ id: val, name: name, description: description });
+   return this;
 }
 window.test.enums.enumWithDescriptions = (new window.test.Enum())
 	.add("multiWordEnumValue", 0, "Multi Word Enum Value")
